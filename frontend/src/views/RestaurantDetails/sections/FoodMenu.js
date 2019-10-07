@@ -1,43 +1,49 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
-import SwipeableViews from "react-swipeable-views";
-import { makeStyles, useTheme, createMuiTheme } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-import Zoom from "@material-ui/core/Zoom";
-import Fab from "@material-ui/core/Fab";
-import Cart from "@material-ui/icons/AddShoppingCartOutlined";
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import SwipeableViews from 'react-swipeable-views';
+import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+// import Typography from '@material-ui/core/Typography';
+import Zoom from '@material-ui/core/Zoom';
+import Fab from '@material-ui/core/Fab';
+import Cart from '@material-ui/icons/AddShoppingCartOutlined';
 
-import Box from "@material-ui/core/Box";
-import styles from "assets/jss/material-kit-react/components/foodmenuStyle";
-import { primaryColor } from "assets/jss/material-kit-react";
-import { purple } from "@material-ui/core/colors";
-import { ThemeProvider } from "@material-ui/styles";
+// import Box from '@material-ui/core/Box';
+import styles from 'assets/jss/material-kit-react/components/foodmenuStyle';
+import { primaryColor } from 'assets/jss/material-kit-react';
+// import { purple } from '@material-ui/core/colors';
+import { ThemeProvider } from '@material-ui/styles';
 
-import FoodCard from "components/Card/FoodCard";
+import FoodCard from 'components/Card/FoodCard';
 import {
   Grid,
-  Dialog,
-  Toolbar,
-  IconButton,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  Slide,
-  Hidden
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+  Badge
+  // Dialog,
+  // Toolbar,
+  // IconButton,
+  // Button,
+  // List,
+  // ListItem,
+  // ListItemText,
+  // Divider,
+  // Slide
+  // Hidden
+} from '@material-ui/core';
+// import CloseIcon from '@material-ui/icons/Close';
+
+import FoodCart from 'components/FoodCart/FoodCart';
+import { addFoods } from 'actions/cartActions';
+
+import { connect } from 'react-redux';
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  // const { children, value, index } = props;
 
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflow: 'hidden' }}>
       <Grid container>
         <Grid
           container
@@ -87,28 +93,24 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `action-tab-${index}`,
-    "aria-controls": `action-tabpanel-${index}`
+    'aria-controls': `action-tabpanel-${index}`
   };
 }
 
 const useStyles = makeStyles(styles);
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 function FoodMenu(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
 
-  function handleClickOpen() {
-    setOpen(true);
-  }
-
-  function handleClose() {
-    setOpen(false);
+  function handleClickOpen(props) {
+    const cartData = {
+      open: true,
+      foods: []
+    };
+    props.addFoods(cartData);
   }
 
   function handleChange(event, newValue) {
@@ -125,7 +127,7 @@ function FoodMenu(props) {
         main: primaryColor
       },
       secondary: {
-        main: "#f44336"
+        main: '#f44336'
       }
     }
   });
@@ -136,88 +138,42 @@ function FoodMenu(props) {
   };
 
   const fab = {
-    color: "primary",
+    color: 'primary',
     className: classes.fab,
     icon: <Cart />,
-    label: "Add To Cart"
-  };
-
-  const _handlePlaceOrder = props => {
-    props.history.push("/placeorder");
+    label: 'Add To Cart'
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-      >
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              Cart
-            </Typography>
-            <Button color="inherit" onClick={handleClose}>
-              save
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <List>
-          <ListItem button>
-            <ListItemText primary="Chicken Biriyani" secondary="1" />
-          </ListItem>
-          <Divider />
-          <ListItem button>
-            <ListItemText primary="Fried Rice" secondary="1" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => {
-              _handlePlaceOrder(props);
-            }}
-          >
-            <ListItemText primary="Place Order" />
-          </ListItem>
-        </List>
-      </Dialog>
-
+      <FoodCart />
       <div className={classes.root}>
         <AppBar
-          position="static"
-          color="default"
+          position='static'
+          color='default'
           style={{ width: theme.spacing(136) }}
         >
           <Tabs
             value={value}
             onChange={handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="scrollable"
-            scrollButtons="auto"
-            aria-label="action tabs example"
+            indicatorColor='primary'
+            textColor='primary'
+            variant='scrollable'
+            scrollButtons='auto'
+            aria-label='action tabs example'
           >
-            <Tab label="Recommended" {...a11yProps(0)} />
-            <Tab label="Mini Biriyani" {...a11yProps(1)} />
-            <Tab label="Biriyani Bonaza" {...a11yProps(2)} />
-            <Tab label="Chicken Starters" {...a11yProps(2)} />
-            <Tab label="Veg Soups" {...a11yProps(2)} />
-            <Tab label="Non Veg Soups" {...a11yProps(2)} />
-            <Tab label="Chicken Kabab" {...a11yProps(2)} />
-            <Tab label="Mutton Kabab" {...a11yProps(2)} />
+            <Tab label='Recommended' {...a11yProps(0)} />
+            <Tab label='Mini Biriyani' {...a11yProps(1)} />
+            <Tab label='Biriyani Bonaza' {...a11yProps(2)} />
+            <Tab label='Chicken Starters' {...a11yProps(2)} />
+            <Tab label='Veg Soups' {...a11yProps(2)} />
+            <Tab label='Non Veg Soups' {...a11yProps(2)} />
+            <Tab label='Chicken Kabab' {...a11yProps(2)} />
+            <Tab label='Mutton Kabab' {...a11yProps(2)} />
           </Tabs>
         </AppBar>
         <SwipeableViews
-          axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={value}
           onChangeIndex={handleChangeIndex}
         >
@@ -228,7 +184,7 @@ function FoodMenu(props) {
         <Zoom
           key={fab.color}
           in={true}
-          title="View Cart"
+          title='View Cart'
           timeout={transitionDuration}
           style={{
             transitionDelay: `${transitionDuration.exit}ms`
@@ -238,10 +194,11 @@ function FoodMenu(props) {
           <Fab
             aria-label={fab.label}
             className={fab.className}
-            color={fab.color}
-            onClick={handleClickOpen}
+            onClick={() => handleClickOpen(props)}
           >
-            {fab.icon}
+            <Badge badgeContent={props.cart.foods.length} color='primary'>
+              {fab.icon}
+            </Badge>
           </Fab>
         </Zoom>
       </div>
@@ -249,4 +206,15 @@ function FoodMenu(props) {
   );
 }
 
-export default withRouter(FoodMenu);
+FoodMenu.propTypes = {
+  addFoods: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  cart: state.cart
+});
+
+export default connect(
+  mapStateToProps,
+  { addFoods }
+)(withRouter(FoodMenu));
