@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Button from "components/CustomButtons/Button.js";
-import Card from "components/Card/Card";
+import { makeStyles } from '@material-ui/core/styles';
+// import Button from "components/CustomButtons/Button.js";
+import Card from 'components/Card/Card';
 
-import styles from "assets/jss/material-kit-react/views/componentsSections/basicsStyle.js";
-import { Grid } from "@material-ui/core";
+import styles from 'assets/jss/material-kit-react/views/componentsSections/basicsStyle.js';
+import { Grid } from '@material-ui/core';
 
 const useStyles = makeStyles(styles);
 
@@ -58,8 +58,8 @@ export default function ProductSection() {
         <div className={classes.title}>
           <h2>These Are Some Beautifufl Restaurants as per Your Location</h2>
         </div>
-        <div id="buttons">
-          <Grid container direction="row" lg={12} spacing={2}>
+        <div id='buttons'>
+          <Grid container direction='row' lg={12} spacing={2}>
             <Grid item lg={4}>
               <Card />
             </Grid>
@@ -72,8 +72,8 @@ export default function ProductSection() {
           </Grid>
         </div>
         <div className={classes.space50} />
-        <div id="buttons">
-          <Grid container direction="row" lg={12} spacing={2}>
+        <div id='buttons'>
+          <Grid container direction='row' lg={12} spacing={2}>
             <Grid item lg={4}>
               <Card />
             </Grid>

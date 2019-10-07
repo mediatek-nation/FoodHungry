@@ -1,6 +1,6 @@
-import { container, primaryColor } from "assets/jss/material-kit-react.js";
-import { green, orange, red } from "@material-ui/core/colors";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { container } from 'assets/jss/material-kit-react.js';
+import { green } from '@material-ui/core/colors';
+import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme();
 
@@ -8,23 +8,28 @@ const foodmenuStyle = {
   root: {
     container,
     backgroundColor: theme.palette.background.paper,
-    position: "relative",
+    position: 'relative',
     minHeight: 200
   },
   fab: {
-    position: "fixed",
+    position: 'fixed',
     bottom: theme.spacing(20),
-    right: theme.spacing(14)
+    [theme.breakpoints.up('lg')]: {
+      right: theme.spacing(15)
+    },
+    [theme.breakpoints.down('md')]: {
+      right: theme.spacing(14)
+    }
   },
   fabGreen: {
     color: theme.palette.common.white,
     backgroundColor: green[500],
-    "&:hover": {
+    '&:hover': {
       backgroundColor: green[600]
     }
   },
   appBar: {
-    position: "relative"
+    position: 'relative'
   },
   title: {
     marginLeft: theme.spacing(2),
