@@ -1,11 +1,27 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
+const passport = require("passport");
 
 // load order model
 const Order = require("../../models/Order");
 
+// test
+router.get("/test", (req, res) => {
+    res.json({
+        msg: "Successfull"
+    });
+});
+
 // user part
+// user can place order
+router.get(
+    "/user/placeorder",
+    passport.authenticate("user", {session: false}),
+    (req, res) => {
+    res.json({
+        msg: "Order Placed"
+    });
+})
 // user can view present orders depending upon order status
 // user can view past orders depending upon order status
 // user can cancel order

@@ -1,10 +1,12 @@
 const express = require("express");
-const mongoose = require("mongoose");
+const fileupload = require("express-fileupload");
+const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
-//const passport = require("passport");
+const passport = require("passport");
 const path = require("path");
-
-require("dotenv").config();
+const connectDB = require("./config/db");
+const cors = require("cors");
+const connectCloudinary = require("./config/cloudinary");
 
 // require routes
 const auth = require("./routes/api/auth");
@@ -21,28 +23,33 @@ const sysadmin = require("./routes/api/sysadmin");
 const userprofile = require("./routes/api/userprofile");
 const verification = require("./routes/api/verification");
 
+express.static(path.join(__dirname, "../frontenduser/build"));
+
+// load env vars
+dotenv.config({ path: "./config/config.env" });
+
+// connect to Database
+connectDB();
+
 // create app
 const app = express();
-express.static(path.join(__dirname, "../frontend/build"));
-
-// config DB
-const db = require("./config/keys").mongoURI;
-
-// connect to DB
-mongoose
-  .connect(db, { useNewUrlParser: true })
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
 
 //passport middleware
-//app.use(passport.initialize());
+app.use(passport.initialize());
 
 //passport Config
-//require("./config/passport.js")(passport);
+require("./config/passport.js")(passport);
 
 //Body parser Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// use file upload
+app.use(fileupload({ useTempFiles: true }));
+app.use(cors());
+
+// cloudinary configuration
+connectCloudinary();
 
 // use routes
 app.use("/api/auth", auth);
@@ -59,15 +66,22 @@ app.use("/api/sysadmin", sysadmin);
 app.use("/api/userprofile", userprofile);
 app.use("/api/verification", verification);
 
-//this is for production time
-//server static assets if in production
-// if (process.env.NODE_ENV === "production") {
-//   //set static folder
-//   app.use(express.static("client/build"));
-app.get("/*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../frontend", "build", "index.html"));
-});
-// }
+// express.static(path.join(__dirname, "../frontenduser/build"));
+//   console.log(process.env.NODE_ENV);
+//   app.get("/", (req, res) => {
+//     res.json({msg: 'hello'});
+//     res.sendFile(path.resolve(__dirname, "../frontenduser", "build", "index.html"));
+//   });
+
+// production level code
+const env = process.env.NODE_ENV;
+if (env.localeCompare("production") == 1) {
+  app.get("/", (req, res) => {
+    res.sendFile(
+      path.resolve(__dirname, "../frontenduser", "build", "index.html")
+    );
+  });
+}
 
 const port = process.env.PORT || 5000;
 

@@ -2,19 +2,35 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const mongoose = require("mongoose");
 const User = mongoose.model("users");
-const keys = require("../config/keys");
+const RestaurantAdmin = mongoose.model("restaurantadmin");
 
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = keys.secretOrKey;
+opts.secretOrKey = process.env.SECRET_OR_KEY;
 
 module.exports = passport => {
   passport.use(
+    "user",
     new JwtStrategy(opts, (jwt_payload, done) => {
-      User.findById(jwt_payload.id)
+      User
+        .findById(jwt_payload.id)
         .then(user => {
           if (user) {
             return done(null, user);
+          }
+          return done(null, false);
+        })
+        .catch(err => console.log(err));
+    })
+  );
+  passport.use(
+    "restadmin",
+    new JwtStrategy(opts, (jwt_payload, done) => {
+      RestaurantAdmin
+        .findById(jwt_payload.id)
+        .then(admin => {
+          if(admin) {
+            return done(null, admin);
           }
           return done(null, false);
         })

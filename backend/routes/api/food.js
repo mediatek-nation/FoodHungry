@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
+const passport = require("passport");
 
 // load model
 const Foods = require("../../models/Foods");
@@ -11,7 +11,17 @@ const Foods = require("../../models/Foods");
 // user can search by a perticular food with its tagname and foodname
 
 // restaurant admin part
-// restaurant admin can add food by its id and update food category by its id
+// restaurant admin can add a food
+router.post(
+    "/restadmin/addfood",
+    passport.authenticate('restadmin', {session: false}),
+    (req, res) => {
+    res.json({
+        msg: "Food added Successfully"
+    });
+});
+
+// restaurant admin can add a food category
 // restaurant admin can delete food on the food array of ids and if its blank after delete then also remove the food details
 
 module.exports = router;

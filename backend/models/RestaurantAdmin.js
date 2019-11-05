@@ -70,6 +70,10 @@ const RestaurantAdminSchema = new Schema({
   },
   usercount: {
     type: Number
+  },
+  mobno: {
+    type: Number,
+    required: true
   }
 });
 
